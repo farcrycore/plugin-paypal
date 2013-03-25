@@ -68,7 +68,7 @@
 	
 	
 	<cfproperty ftSeq="40" ftWizardStep="Customer" ftFieldset="User Information" ftLabel="Username"
-				name="username" type="string" />
+				name="farcryuser" type="string" />
 	
 	<cfproperty ftSeq="41" ftWizardStep="Customer" ftFieldset="User Information" ftLabel="IP Address"
 				name="ipAddress" type="string" />

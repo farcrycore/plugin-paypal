@@ -64,7 +64,7 @@
 		</table>
 	</cfoutput>
 	
-<cfelseif application.fc.lib.db.isDeployed(typename=attributes.typename,dsn=application.dsn)>
+<cfelseif not application.fc.lib.db.isDeployed(typename="paypalTransaction",dsn=application.dsn)>
 
 	<cfoutput>
 		<p>Status: <span class="status-bad">transaction log undeployed</span></p>

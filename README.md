@@ -189,10 +189,10 @@ plugin, including
 *NOTE: the log only stores the last 4 digits of credit card numbers and does 
 NOT store CVV2 values.* 
 
-[payflowpro] https://www.paypal.com/us/webapps/mpp/referral/paypal-payflow-pro
-[paypaldeveloper] https://developer.paypal.com/
-[paypalsandbox] https://developer.paypal.com/webapps/developer/applications/accounts
-[payflowpropdf] https://www.paypalobjects.com/webstatic/en_US/developer/docs/pdf/pp_payflowpro_guide.pdf
-[searchtransactions] https://www.x.com/developers/paypal/documentation-tools/api/transactionsearch-api-operation-nvp
-[makedirectpayment] https://www.x.com/developers/paypal/documentation-tools/api/dodirectpayment-api-operation-nvp
-[gettransactiondetails] https://www.x.com/developers/paypal/documentation-tools/api/gettransactiondetails-api-operation-nvp
+[payflowpro]: https://www.paypal.com/us/webapps/mpp/referral/paypal-payflow-pro
+[paypaldeveloper]: https://developer.paypal.com/
+[paypalsandbox]: https://developer.paypal.com/webapps/developer/applications/accounts
+[payflowpropdf]: https://www.paypalobjects.com/webstatic/en_US/developer/docs/pdf/pp_payflowpro_guide.pdf
+[searchtransactions]: https://www.x.com/developers/paypal/documentation-tools/api/transactionsearch-api-operation-nvp
+[makedirectpayment]: https://www.x.com/developers/paypal/documentation-tools/api/dodirectpayment-api-operation-nvp
+[gettransactiondetails]: https://www.x.com/developers/paypal/documentation-tools/api/gettransactiondetails-api-operation-nvp

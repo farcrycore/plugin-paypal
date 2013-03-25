@@ -148,7 +148,7 @@ as CF Struct object. using this object we can pring the response values in Displ
 		<cfargument name="startDate" type="date" required="true" />
 		<cfargument name="endDate" type="date" required="false" />
 		<cfargument name="transactionID" type="string" required="false" />
-		<cfargument name="invoiceID" type="string" required="false" />
+		<cfargument name="invoiceNo" type="string" required="false" />
 		<cfargument name="status" type="string" required="false" options="Pending,Processing,Success,Denied,Reversed" />
 		<cfargument name="firstname" type="string" required="false" />
 		<cfargument name="lastname" type="string" required="false" />
@@ -173,8 +173,8 @@ as CF Struct object. using this object we can pring the response values in Displ
 			<cfset requestData.TRANSACTIONID = arguments.transactionID />
 		</cfif>
 		
-		<cfif structkeyexists(arguments,"invoiceID")>
-			<cfset requestData.INVNUM = arguments.invoiceID />
+		<cfif structkeyexists(arguments,"invoiceNo")>
+			<cfset requestData.INVNUM = arguments.invoiceNo />
 		</cfif>
 		
 		<cfif structkeyexists(arguments,"status")>
@@ -233,7 +233,7 @@ as CF Struct object. using this object we can pring the response values in Displ
 		<cfargument name="XID" type="string" required="false" hint="If the cmpi_lookup request returns Y for Enrolled, set this field to the Xid value returned by cmpi_authenticate. Otherwise, set this field to blank. " />
 		
 		<!--- Payer details --->
-		<cfargument name="username" type="string" required="false" />
+		<cfargument name="farcryuser" type="string" required="false" default="#application.security.getCurrentUser()#" />
 		<cfargument name="email" type="string" required="false" maxLength="127" />
 		<cfargument name="firstname" type="string" required="true" maxLength="25" />
 		<cfargument name="lastname" type="string" required="true" maxLength="25" />
