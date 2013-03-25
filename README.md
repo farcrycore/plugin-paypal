@@ -65,6 +65,101 @@ add an amount on form submit, then pass that information to the payment method.
 
 There are a number of utilities in the webtop to help make administration easier.
 
+# LIB Reference
+
+The library is available at `application.fc.lib.paypal`. Most of these arguments 
+are passed to PayPal, and you should refer to their documentation for full details 
+on what each is for.
+
+Note that most string arguments are truncated according to the API requirements,
+e.g. firstname can't be more than 25 characters.
+
+## `searchTransactions` ([PayPal docs][searchtransactions])
+
+Arguments:
+
+- startDate (req)
+- endDate (opt)
+- transactionID (opt)
+- invoiceID (opt)
+- status (opt); one of Pending, Processing, Success, Denied, Reversed
+- firstname (opt)
+- lastname (opt)
+
+It useful to remember that transactionID is provided by PayPal in the 
+transaction response, but the invoiceID is an arbitrary string that your 
+*application* provides when it make the processing request.
+
+## `makeDirectPayment` ([PayPal docs][makedirectpayment])
+
+Arguments:
+
+- paymentAction (opt); one of sale, authorization
+- ipaddress (opt)
+- returnFMDetails (opt)
+- creditcardtype (req); one of visa, mastercard, discover, amex, maestro
+- creditcardnumber (req)
+- creditcardexpiry (opt)
+- creditcardcvv2 (opt)
+- startDate (opt); Maestro only
+- issueNumber (opt); Maestro only
+- authStatus3DS (opt); UK only
+- mpivendor3DS (opt); UK only
+- CAVV (opt); UK only
+- eci3DS (opt); UK only
+- XID (opt); UK only
+- farcryuser (opt); included in plugin's transaction log
+- email (opt)
+- firstname (req)
+- lastname (req)
+- street (req)
+- street2 (opt)
+- city (req)
+- state (req)
+- country (req)
+- zip (req)
+- phone (opt)
+- shipToName (opt)
+- shipToStreet (opt)
+- shipToStreet2 (opt)
+- shipToCity (opt)
+- shipToState (opt)
+- shipToCountry (opt)
+- shipToZip (opt)
+- amount (req)
+- currencyCode (opt)
+- itemAmount (opt)
+- shippingAmount (opt)
+- insuranceAmount (opt)
+- shippingDiscountAmount (opt)
+- handlingAmount (opt)
+- taxAmount (opt)
+- description (opt)
+- custom (opt)
+- invoiceNo (opt)
+- buttonSource (opt)
+- notifyURL (opt)
+- recurring (opt)
+- items (array of structs); each struct can have name, description, amount, number, 
+  quantity, and taxAmount; see PayPal docs for details
+
+For a slightly less overwhelming sense of what this method requires, have a look 
+at the Manual Payment utility in the webtop. It neatly encapsulates the minimum\*
+required for a PayPal payment. 
+
+\* technically invoiceNo isn't required - but most production uses of this plugin 
+will need it
+
+## `getTransactionDetails` ([PayPal docs][gettransactiondetails])
+
+Arguments:
+
+- transactionID (req)
+
+This method returns the information that PayPal has about a transaction. Note that
+all of this information can be accessed in the webtop using the Transaction Log:
+click on the Transaction ID for a transaction, and you can see this information.
+
 ## API Status
 
 This page will show you if the plugin isn't configured, or there are undeployed 
@@ -98,3 +193,6 @@ NOT store CVV2 values.*
 [paypaldeveloper] https://developer.paypal.com/
 [paypalsandbox] https://developer.paypal.com/webapps/developer/applications/accounts
 [payflowpropdf] https://www.paypalobjects.com/webstatic/en_US/developer/docs/pdf/pp_payflowpro_guide.pdf
+[searchtransactions] https://www.x.com/developers/paypal/documentation-tools/api/transactionsearch-api-operation-nvp
+[makedirectpayment] https://www.x.com/developers/paypal/documentation-tools/api/dodirectpayment-api-operation-nvp
+[gettransactiondetails] https://www.x.com/developers/paypal/documentation-tools/api/gettransactiondetails-api-operation-nvp
