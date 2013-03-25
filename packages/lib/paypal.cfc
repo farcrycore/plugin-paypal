@@ -115,18 +115,20 @@ as CF Struct object. using this object we can pring the response values in Displ
 		<cfset var stResult = duplicate(arguments.st) />
 		<cfset var thisprop = "" />
 		<cfset var regexp = "^L_(#replace(arguments.properties,',','|','all')#)\d+$" />
+		<cfset var index = 0 />
+		<cfset var key = "" />
 		
 		<cfset stResult[arguments.arrayname] = arraynew(1) />
 		
 		<cfloop collection="#stResult#" item="key">
 			<cfif refindnocase(regexp,key)>
-				<cfset index = rereplace(key,"^[A-Z_]+(\d+)$","\1") />
+				<cfset index = int(rereplace(key,"^[A-Z_]+(\d+)$","\1")) + 1 />
 				
-				<cfif not arrayIsDefined(stResult.errors,index+1)>
-					<cfset stResult[arguments.arrayname][index+1] = structnew() />
+				<cfif not arrayIsDefined(stResult[arguments.arrayname],index)>
+					<cfset stResult[arguments.arrayname][index] = structnew() />
 				</cfif>
 				
-				<cfset stResult[arguments.arrayname][index+1][rereplace(key,"^L_([A-Z_]+)\d+$","\1")] = stResult[key] />
+				<cfset stResult[arguments.arrayname][index][rereplace(key,"^L_([A-Z_]+)\d+$","\1")] = stResult[key] />
 				<cfset structdelete(stResult,key) />
 			</cfif>
 		</cfloop>

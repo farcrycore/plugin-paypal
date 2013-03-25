@@ -65,6 +65,35 @@ add an amount on form submit, then pass that information to the payment method.
 
 There are a number of utilities in the webtop to help make administration easier.
 
+## API Status
+
+This page will show you if the plugin isn't configured, or there are undeployed 
+content types. As a test of the API (and your credentials) it also retrieves
+a list of the most recent transactions from PayPal. 
+
+## Manual Payment
+
+This utility allows you to test credit card processing, and make payments on
+behalf of others. It doesn't make you enter every field that the `makeDirectPayment` 
+method will accept, only those that are required.
+
+## Transaction Log
+
+PayPal has it's own log, but it only stores specific information, and doesn't
+store transactions that have certain errors.
+
+This log stores information about *every* transaction that is attempted by the
+plugin, including 
+
+- much of the information submitted to the gateway, 
+- the username of the person who submitted the transaction,
+- the time the transaction was *sent* to PayPal and the time PayPal *responded*
+- the success / failure of the transaction
+- any errors / information returned by PayPal
+
+*NOTE: the log only stores the last 4 digits of credit card numbers and does 
+NOT store CVV2 values.* 
+
 # LIB Reference
 
 The library is available at `application.fc.lib.paypal`. Most of these arguments 
@@ -159,35 +188,6 @@ Arguments:
 This method returns the information that PayPal has about a transaction. Note that
 all of this information can be accessed in the webtop using the Transaction Log:
 click on the Transaction ID for a transaction, and you can see this information.
-
-## API Status
-
-This page will show you if the plugin isn't configured, or there are undeployed 
-content types. As a test of the API (and your credentials) it also retrieves
-a list of the most recent transactions from PayPal. 
-
-## Manual Payment
-
-This utility allows you to test credit card processing, and make payments on
-behalf of others. It doesn't make you enter every field that the `makeDirectPayment` 
-method will accept, only those that are required.
-
-## Transaction Log
-
-PayPal has it's own log, but it only stores specific information, and doesn't
-store transactions that have certain errors.
-
-This log stores information about *every* transaction that is attempted by the
-plugin, including 
-
-- much of the information submitted to the gateway, 
-- the username of the person who submitted the transaction,
-- the time the transaction was *sent* to PayPal and the time PayPal *responded*
-- the success / failure of the transaction
-- any errors / information returned by PayPal
-
-*NOTE: the log only stores the last 4 digits of credit card numbers and does 
-NOT store CVV2 values.* 
 
 [payflowpro]: https://www.paypal.com/us/webapps/mpp/referral/paypal-payflow-pro
 [paypaldeveloper]: https://developer.paypal.com/

@@ -88,7 +88,7 @@
 			</cfoutput>
 		</cfcatch>
 	</cftry>
-	
+	<cfdump var="#stResult#"><cfabort>
 	<cfif noerror>
 		<cfoutput>
 			<p>Status: <span class="status-good">good</span></p>
