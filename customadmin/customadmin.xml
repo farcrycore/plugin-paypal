@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<webtop>
+	<section id="paypaltab" sequence="100000"  label="PayPal">
+		<subsection id="paypalsubscection" label="PayPal">
+			<menu id="paypalmenu" label="PayPal">
+				<menuitem sequence="10" label="API Status" link="/admin/customadmin.cfm?plugin=paypal&amp;module=utilities/apistatus.cfm" />
+				<menuitem sequence="20" label="Manual Payment" link="/admin/customadmin.cfm?plugin=paypal&amp;module=utilities/processpayment.cfm" />
+				<menuitem sequence="30" label="Transaction Log" link="/admin/customadmin.cfm?plugin=paypal&amp;module=customlists/paypalTransaction.cfm" />
+			</menu>
+		</subsection>
+	</section>
+</webtop>
