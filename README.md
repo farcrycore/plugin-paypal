@@ -1,5 +1,3 @@
-# Overview
-
 The purpose of this plugin is to provide credit card processing functionality via 
 PayPal. It is designed so that transactions can be handled with a minimum of fuss,
 and so that other processing gateways could expose equivalent interfaces.
