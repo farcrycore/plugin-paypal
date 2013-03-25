@@ -151,7 +151,7 @@
 		<cfargument name="previousStatus" type="string" required="false" />
 		
 		<!--- if a credit card number is part of this update, sanitize it --->
-		<cfif structkeyexists(arguments.stProperties,"creditcardnumber")>
+		<cfif structkeyexists(arguments.stProperties,"creditcardnumber") and len(arguments.stProperties.creditcardnumber)>
 			<cfset arguments.stProperties.creditcardnumber = repeatstring("*",len(arguments.stProperties.creditcardnumber)-4) & right(arguments.stProperties.creditcardnumber,4) />
 		</cfif>
 		
