@@ -443,7 +443,7 @@
 		<cfset stLog.objectid = application.fapi.getUUID() />
 		<cfset stLog.typename ="paypalTransaction" />
 		<cfset stLog.datetimeTransactionStart = now() />
-		<cfset stLog.result = "Processing" />
+		<cfset stLog.result = "Waiting for PayPal" />
 		<cfset application.fapi.setData(stProperties=stLog) />
 		
 		<cfset stResponse = makeAPIRequest(
@@ -469,7 +469,7 @@
 		<cfif structkeyexists(stResponse,"cvv2Match")>
 			<cfset stLog.cvv2Match = stResponse.cvv2Match />
 		</cfif>
-		<cfset stLog.errors = stResponse.errors />
+		<cfset stLog.messages = stResponse.errors />
 		<cfset stLog.datetimeTransactionFinish = now() />
 		<cfset application.fapi.setData(stProperties=stLog) />
 		

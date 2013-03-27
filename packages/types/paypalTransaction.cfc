@@ -156,11 +156,11 @@
 		</cfif>
 		
 		<!--- if messages or items are arrays, convert them to wddx --->
-		<cfif structkeyexists(arguments.stProperties,"messages") and isarray(arguments.stProperties.messages)>
-			<cfwddx action="cfml2wddx" input="#arguments.stProperties.messages#" output="#arguments.stProperties.messages#" />
+		<cfif structkeyexists(arguments.stProperties,"messages") and not issimplevalue(arguments.stProperties.messages)>
+			<cfwddx action="cfml2wddx" input="#arguments.stProperties.messages#" output="arguments.stProperties.messages" />
 		</cfif>
-		<cfif structkeyexists(arguments.stProperties,"items") and isarray(arguments.stProperties.items)>
-			<cfwddx action="cfml2wddx" input="#arguments.stProperties.items#" output="#arguments.stProperties.items#" />
+		<cfif structkeyexists(arguments.stProperties,"items") and not issimplevalue(arguments.stProperties.items)>
+			<cfwddx action="cfml2wddx" input="#arguments.stProperties.items#" output="arguments.stProperties.items" />
 		</cfif>
 		
 		<cfreturn super.setData(argumentCollection=arguments) />
@@ -168,7 +168,7 @@
 	
 	
 	
-	<cffunction name="ftDsiplayMessages" access="public" output="true" returntype="string" hint="his will return a string of formatted HTML text to enable the user to edit the data">
+	<cffunction name="ftDisplayMessages" access="public" output="true" returntype="string" hint="his will return a string of formatted HTML text to enable the user to edit the data">
 		<cfargument name="typename" required="true" type="string" hint="The name of the type that this field is part of.">
 		<cfargument name="stObject" required="true" type="struct" hint="The object of the record that this field is part of.">
 		<cfargument name="stMetadata" required="true" type="struct" hint="This is the metadata that is either setup as part of the type.cfc or overridden when calling ft:object by using the stMetadata argument.">
@@ -181,11 +181,13 @@
 			<cfwddx action="wddx2cfml" input="#arguments.stMetadata.value#" output="aData" />
 			
 			<cfsavecontent variable="html"><cfoutput>
-				<ul>
-					<cfloop from="1" to="#arraylen(aData)#" index="i">
-						<li>#aData[i].shortmessage# [#aData[i].errorcode#]: #aData[i].longmessage#</li>
-					</cfloop>
-				</ul>
+				<div class="multiField">
+					<ul>
+						<cfloop from="1" to="#arraylen(aData)#" index="i">
+							<li><span style="font-weight:bold;">#aData[i].shortmessage# [#aData[i].errorcode#]</span>: #aData[i].longmessage#</li>
+						</cfloop>
+					</ul>
+				</div>
 			</cfoutput></cfsavecontent>
 		</cfif>
 		
@@ -205,18 +207,20 @@
 			<cfwddx action="wddx2cfml" input="#arguments.stMetadata.value#" output="aData" />
 			
 			<cfsavecontent variable="html"><cfoutput>
-				<ul>
-					<cfloop from="1" to="#arraylen(aData)#" index="i">
-						<cfparam name="aData[i].name" default="" />
-						<cfparam name="aData[i].description" default="" />
-						<cfparam name="aData[i].amount" default="0.00" />
-						<cfparam name="aData[i].number" default="" />
-						<cfparam name="aData[i].quantity" default="" />
-						<cfparam name="aData[i].taxAmount" default="" />
-						
-						<li><a href><span title="#aData[i].description#">#aData[i].name#<cfif len(aData[i].number)> [#aData[i].number#]</cfif><cfif len(aData[i].quantity)> x #aData[i].quantity#</cfif>: #aData[i].amount#<cfif len(aData[i].taxAmount)> (tax #aData[i].taxAmount#)</cfif></li>
-					</cfloop>
-				</ul>
+				<div class="multiField">
+					<ul>
+						<cfloop from="1" to="#arraylen(aData)#" index="i">
+							<cfparam name="aData[i].name" default="" />
+							<cfparam name="aData[i].description" default="" />
+							<cfparam name="aData[i].amount" default="0.00" />
+							<cfparam name="aData[i].number" default="" />
+							<cfparam name="aData[i].quantity" default="" />
+							<cfparam name="aData[i].taxAmount" default="" />
+							
+							<li><a href><span title="#aData[i].description#" style="font-weight:bold;">#aData[i].name#<cfif len(aData[i].number)> [#aData[i].number#]</cfif><cfif len(aData[i].quantity)> x #aData[i].quantity#</cfif>: #aData[i].amount#<cfif len(aData[i].taxAmount)> (tax #aData[i].taxAmount#)</cfif></li>
+						</cfloop>
+					</ul>
+				</div>
 			</cfoutput></cfsavecontent>
 		</cfif>
 		
