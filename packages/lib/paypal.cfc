@@ -1,14 +1,4 @@
-<!-- 
-*************************************************
-CallerService.cfc
-
-This coldufion component reused by all sample page to get credential information and 
-it has getNVPResponse method which takes nvpString as parameter and return Nvpresponse 
-as CF Struct object. using this object we can pring the response values in Display.cfm page
-
-*************************************************
---->
-<cfcomponent>
+<cfcomponent output="false">
 	
 	<cffunction name="getNVPResponse" access="public" returntype="struct" hint="This method will take response from the server and display accordingly in the browser">
 		<cfargument name="nvpString" type="string" required="yes" >
@@ -235,7 +225,7 @@ as CF Struct object. using this object we can pring the response values in Displ
 		<cfargument name="XID" type="string" required="false" hint="If the cmpi_lookup request returns Y for Enrolled, set this field to the Xid value returned by cmpi_authenticate. Otherwise, set this field to blank. " />
 		
 		<!--- Payer details --->
-		<cfargument name="farcryuser" type="string" required="false" default="#application.security.getCurrentUser()#" />
+		<cfargument name="farcryuser" type="string" required="false" default="#application.security.getCurrentUserID()#" />
 		<cfargument name="email" type="string" required="false" maxLength="127" />
 		<cfargument name="firstname" type="string" required="true" maxLength="25" />
 		<cfargument name="lastname" type="string" required="true" maxLength="25" />
