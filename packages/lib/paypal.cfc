@@ -38,7 +38,7 @@
 			<cfset stResult.user = "" />
 			<cfset stResult.password = "" />
 			<cfset stResult.domain = "" />
-			<cfset stREsult.port = "80" />
+			<cfset stResult.port = "80" />
 		</cfif>
 		
 		<cfreturn stResult />
@@ -54,7 +54,7 @@
 		<cfargument name="requestData" type="struct" required="true" />
 		
 		<cfset var stProxy = parseProxy(arguments.proxy) />
-		<cfset var cfhttp = structnew() />
+		<cfset var stHTTP = structnew() />
 		<cfset var key = "" />
 		<cfset var wddx = "" />
 		
@@ -64,17 +64,17 @@
 		<cfset arguments.requestData.SUBJECT = "" />
 		<cfset arguments.requestData.VERSION = "92.0">
 		
-		<cfhttp url="https://#arguments.server#" method="POST" proxyPort="#stProxy.port#" proxyUser="#stProxy.user#" proxyPassword="#stProxy.password#" timeout="60">
+		<cfhttp url="https://#arguments.server#" method="POST" proxyPort="#stProxy.port#" proxyUser="#stProxy.user#" proxyPassword="#stProxy.password#" timeout="60" result="stHTTP">
 			<cfloop collection="#arguments.requestData#" item="key">
-				<cfhttpparam name="#key#" value="#requestData[key]#" type="FormField" encoded="YES">
+				<cfhttpparam name="#key#" value="#arguments.requestData[key]#" type="FormField" encoded="YES">
 			</cfloop>
 		</cfhttp>
 		
-		<cfif not cfhttp.statuscode eq "200 OK">
+		<cfif not stHTTP.statuscode eq "200 OK">
 			<cfwddx action="cfml2wddx" input="#arguments#" output="wddx" />
-			<cfthrow message="Error accessing API: #cfhttp.statuscode#" detail="#wddx#" extendedinfo="#cfhttp.filecontent#" type="api" />
+			<cfthrow message="Error accessing API: #stHTTP.statuscode#" detail="#wddx#" extendedinfo="#stHTTP.filecontent#" type="api" />
 		<cfelse>
-			<cfreturn getNVPResponse(cfhttp.FileContent) />
+			<cfreturn getNVPResponse(stHTTP.FileContent) />
 		</cfif>
 	</cffunction>
 	
@@ -152,33 +152,33 @@
 		<cfset var index = 0 />
 		
 		
-		<cfset requestData.METHOD = "TransactionSearch" />
-		<cfset requestData.STARTDATE = "#dateformat(arguments.startDate,'yyyy-mm-dd')#T00:00:00Z" />
+		<cfset stRequestData.METHOD = "TransactionSearch" />
+		<cfset stRequestData.STARTDATE = "#dateformat(arguments.startDate,'yyyy-mm-dd')#T00:00:00Z" />
 		
 		<cfif structkeyexists(arguments,"endDate")>
-			<cfset requestData.ENDDATE = "#dateformat(arguments.endDate,'yyyy-mm-dd')#T23:00:00Z" />
+			<cfset stRequestData.ENDDATE = "#dateformat(arguments.endDate,'yyyy-mm-dd')#T23:00:00Z" />
 		<cfelse>
-			<cfset requestData.ENDDATE = "#dateformat(arguments.startDate,'yyyy-mm-dd')#T23:00:00Z" />
+			<cfset stRequestData.ENDDATE = "#dateformat(arguments.startDate,'yyyy-mm-dd')#T23:00:00Z" />
 		</cfif>
 		
 		<cfif structkeyexists(arguments,"transactionID")>
-			<cfset requestData.TRANSACTIONID = arguments.transactionID />
+			<cfset stRequestData.TRANSACTIONID = arguments.transactionID />
 		</cfif>
 		
 		<cfif structkeyexists(arguments,"invoiceNo")>
-			<cfset requestData.INVNUM = arguments.invoiceNo />
+			<cfset stRequestData.INVNUM = arguments.invoiceNo />
 		</cfif>
 		
 		<cfif structkeyexists(arguments,"status")>
-			<cfset requestData.STATUS = arguments.status />
+			<cfset stRequestData.STATUS = arguments.status />
 		</cfif>
 		
 		<cfif structkeyexists(arguments,"firstname")>
-			<cfset requestData.FIRSTNAME = arguments.firstname />
+			<cfset stRequestData.FIRSTNAME = arguments.firstname />
 		</cfif>
 		
 		<cfif structkeyexists(arguments,"lastname")>
-			<cfset requestData.LASTNAME = arguments.lastname />
+			<cfset stRequestData.LASTNAME = arguments.lastname />
 		</cfif>
 		
 		<cfset stResponse = makeAPIRequest(
@@ -187,7 +187,7 @@
 			password=arguments.password,
 			signature=arguments.signature,
 			proxy=arguments.proxy,
-			requestData=requestData) />
+			requestData=stRequestData) />
 		
 		<cfset stResponse = arrayify(stResponse,"errorcode,longmessage,severitycode,shortmessage","errors") />
 		<cfset stResponse = arrayify(stResponse,"timestamp,timezone,type,email,name,transactionid,status,amt,currencycode,feeamt,netamt","transactions") />
@@ -282,159 +282,159 @@
 		<cfset var index = 0 />
 		
 		
-		<cfset requestData.METHOD = "DoDirectPayment" />
-		<cfset requestData.PAYMENTACTION = arguments.paymentaction />
-		<cfset requestData.IPADDRESS = arguments.ipaddress />
+		<cfset stRequestData.METHOD = "DoDirectPayment" />
+		<cfset stRequestData.PAYMENTACTION = arguments.paymentaction />
+		<cfset stRequestData.IPADDRESS = arguments.ipaddress />
 		<cfif arguments.returnFMDetails>
-			<cfset requestData.RETURNFMDETAILS = 1 />
+			<cfset stRequestData.RETURNFMDETAILS = 1 />
 		<cfelse>
-			<cfset requestData.RETURNFMDETAILS = 0 />
+			<cfset stRequestData.RETURNFMDETAILS = 0 />
 		</cfif>
 		
 		<!--- Credit card details --->
 		<cfif structkeyexists(arguments,"creditcardtype")>
-			<cfset requestData.CREDITCARDTYPE = left(arguments.creditcardtype,10) />
+			<cfset stRequestData.CREDITCARDTYPE = left(arguments.creditcardtype,10) />
 		</cfif>
-		<cfset requestData.ACCT = rereplace(arguments.creditcardnumber,"[^\d]+","","ALL") />
+		<cfset stRequestData.ACCT = rereplace(arguments.creditcardnumber,"[^\d]+","","ALL") />
 		<cfif structkeyexists(arguments,"creditcardexpiry")>
-			<cfset requestData.EXPDATE = rereplace(arguments.creditcardexpiry,"[^\d]+","","ALL") />
+			<cfset stRequestData.EXPDATE = rereplace(arguments.creditcardexpiry,"[^\d]+","","ALL") />
 		</cfif>
 		<cfif structkeyexists(arguments,"creditcardcvv2")>
-			<cfset requestData.CVV2 = left(arguments.creditcardcvv2,4) />
+			<cfset stRequestData.CVV2 = left(arguments.creditcardcvv2,4) />
 		</cfif>
 		
 		<!--- MESTRO only --->
 		<cfif structkeyexists(arguments,"startDate")>
-			<cfset requestData.STARTDATE = rereplace(arguments.startDate,"[^\d]+","","ALL") />
+			<cfset stRequestData.STARTDATE = rereplace(arguments.startDate,"[^\d]+","","ALL") />
 		</cfif>
 		<cfif structkeyexists(arguments,"issueNumber")>
-			<cfset requestData.ISSUENUMBER = left(rereplace(arguments.issueNumber,"[^\d]+","","ALL"),2) />
+			<cfset stRequestData.ISSUENUMBER = left(rereplace(arguments.issueNumber,"[^\d]+","","ALL"),2) />
 		</cfif>
 		
 		<!--- 3D Secure Request Fields (U.K. Merchants Only). Values returned by the Cardinal Centinel. --->
 		<cfif structkeyexists(arguments,"authStatus3DS")>
-			<cfset requestData.AUTHSTATUS3DS = arguments.authStatus3DS />
+			<cfset stRequestData.AUTHSTATUS3DS = arguments.authStatus3DS />
 		</cfif>
 		<cfif structkeyexists(arguments,"mpivendor3DS")>
-			<cfset requestData.MPIVENDOR3DS = arguments.mpivendor3DS />
+			<cfset stRequestData.MPIVENDOR3DS = arguments.mpivendor3DS />
 		</cfif>
 		<cfif structkeyexists(arguments,"CAVV")>
-			<cfset requestData.CAVV = arguments.CAVV />
+			<cfset stRequestData.CAVV = arguments.CAVV />
 		</cfif>
 		<cfif structkeyexists(arguments,"eci3DS")>
-			<cfset requestData.ECI3DS = arguments.eci3DS />
+			<cfset stRequestData.ECI3DS = arguments.eci3DS />
 		</cfif>
 		<cfif structkeyexists(arguments,"XID")>
-			<cfset requestData.XID = arguments.XID />
+			<cfset stRequestData.XID = arguments.XID />
 		</cfif>
 		
 		<!--- Payer details --->
 		<cfif structkeyexists(arguments,"email")>
-			<cfset requestData.EMAIL = left(arguments.email,127) />
+			<cfset stRequestData.EMAIL = left(arguments.email,127) />
 		</cfif>
-		<cfset requestData.FIRSTNAME = left(arguments.firstname,25) />
-		<cfset requestData.LASTNAME = left(arguments.lastname,25) />
+		<cfset stRequestData.FIRSTNAME = left(arguments.firstname,25) />
+		<cfset stRequestData.LASTNAME = left(arguments.lastname,25) />
 		
 		<!--- Address --->
-		<cfset requestData.STREET = left(arguments.street,100) />
+		<cfset stRequestData.STREET = left(arguments.street,100) />
 		<cfif structkeyexists(arguments,"street2")>
-			<cfset requestData.STREET2 = left(arguments.street2,100) />
+			<cfset stRequestData.STREET2 = left(arguments.street2,100) />
 		</cfif>
-		<cfset requestData.CITY = left(arguments.city,40) />
-		<cfset requestData.STATE = left(arguments.state,40) />
-		<cfset requestData.COUNTRYCODE = left(arguments.country,2) />
-		<cfset requestData.ZIP = left(arguments.zip,20) />
+		<cfset stRequestData.CITY = left(arguments.city,40) />
+		<cfset stRequestData.STATE = left(arguments.state,40) />
+		<cfset stRequestData.COUNTRYCODE = left(arguments.country,2) />
+		<cfset stRequestData.ZIP = left(arguments.zip,20) />
 		<cfif structkeyexists(arguments,"phone")>
-			<cfset requestData.SHIPTOPHONENUM = left(arguments.phone,20) />
+			<cfset stRequestData.SHIPTOPHONENUM = left(arguments.phone,20) />
 		</cfif>
 		
 		<!--- Shipping --->
 		<cfif structkeyexists(arguments,"shipToName")>
-			<cfset requestData.SHIPTONAME = left(arguments.shipToName,32) />
+			<cfset stRequestData.SHIPTONAME = left(arguments.shipToName,32) />
 		</cfif>
 		<cfif structkeyexists(arguments,"shipToStreet")>
-			<cfset requestData.SHIPTOSTREET = left(arguments.shipToStreet,100) />
+			<cfset stRequestData.SHIPTOSTREET = left(arguments.shipToStreet,100) />
 		</cfif>
 		<cfif structkeyexists(arguments,"shipToStreet2")>
-			<cfset requestData.SHIPTOSTREET2 = left(arguments.shipToStreet2,100) />
+			<cfset stRequestData.SHIPTOSTREET2 = left(arguments.shipToStreet2,100) />
 		</cfif>
 		<cfif structkeyexists(arguments,"shipToCity")>
-			<cfset requestData.SHIPTOCITY = left(arguments.shipToCity,40) />
+			<cfset stRequestData.SHIPTOCITY = left(arguments.shipToCity,40) />
 		</cfif>
 		<cfif structkeyexists(arguments,"shipToState")>
-			<cfset requestData.SHIPTOSTATE = left(arguments.shipToState,40) />
+			<cfset stRequestData.SHIPTOSTATE = left(arguments.shipToState,40) />
 		</cfif>
 		<cfif structkeyexists(arguments,"shipToCountry")>
-			<cfset requestData.SHIPTOCOUNTRY = left(arguments.shipToCountry,2) />
+			<cfset stRequestData.SHIPTOCOUNTRY = left(arguments.shipToCountry,2) />
 		</cfif>
 		<cfif structkeyexists(arguments,"shipToZip")>
-			<cfset requestData.SHIPTOZIP = left(arguments.shipToZip,20) />
+			<cfset stRequestData.SHIPTOZIP = left(arguments.shipToZip,20) />
 		</cfif>
 		
 		<!--- Payment --->
-		<cfset requestData.AMT = numberformat(arguments.amount,"0.00") />
+		<cfset stRequestData.AMT = numberformat(arguments.amount,"0.00") />
 		<cfif structkeyexists(arguments,"currencyCode")>
-			<cfset requestData.CURRENCYCODE = left(arguments.currencyCode,3) />
+			<cfset stRequestData.CURRENCYCODE = left(arguments.currencyCode,3) />
 		</cfif>
 		<cfif structkeyexists(arguments,"itemAmount")>
-			<cfset requestData.ITEMAMT = numberformat(arguments.itemAmount,"0.00") />
+			<cfset stRequestData.ITEMAMT = numberformat(arguments.itemAmount,"0.00") />
 		</cfif>
 		<cfif structkeyexists(arguments,"shippingAmount")>
-			<cfset requestData.SHIPPINGAMT = numberformat(arguments.shippingAmount,"0.00") />
+			<cfset stRequestData.SHIPPINGAMT = numberformat(arguments.shippingAmount,"0.00") />
 		</cfif>
 		<cfif structkeyexists(arguments,"insuranceAmount")>
-			<cfset requestData.INSURANCEAMT = numberformat(arguments.insuranceAmount,"0.00") />
+			<cfset stRequestData.INSURANCEAMT = numberformat(arguments.insuranceAmount,"0.00") />
 		</cfif>
 		<cfif structkeyexists(arguments,"shippingDiscountAmount")>
-			<cfset requestData.SHIPDISCAMT = numberformat(arguments.shippingDiscountAmount,"0.00") />
+			<cfset stRequestData.SHIPDISCAMT = numberformat(arguments.shippingDiscountAmount,"0.00") />
 		</cfif>
 		<cfif structkeyexists(arguments,"handlingAmount")>
-			<cfset requestData.HANDLINGAMT = numberformat(arguments.handlingAmount,"0.00") />
+			<cfset stRequestData.HANDLINGAMT = numberformat(arguments.handlingAmount,"0.00") />
 		</cfif>
 		<cfif structkeyexists(arguments,"taxAmount")>
-			<cfset requestData.TAXAMT = numberformat(arguments.taxAmount,"0.00") />
+			<cfset stRequestData.TAXAMT = numberformat(arguments.taxAmount,"0.00") />
 		</cfif>
 		
 		<!--- Miscellaneous --->
 		<cfif structkeyexists(arguments,"description")>
-			<cfset requestData.DESC = left(arguments.description,127) />
+			<cfset stRequestData.DESC = left(arguments.description,127) />
 		</cfif>
 		<cfif structkeyexists(arguments,"custom")>
-			<cfset requestData.CUSTOM = left(arguments.custom,256) />
+			<cfset stRequestData.CUSTOM = left(arguments.custom,256) />
 		</cfif>
 		<cfif structkeyexists(arguments,"invoiceNo")>
-			<cfset requestData.INVNUM = left(arguments.invoiceNo,256) />
+			<cfset stRequestData.INVNUM = left(arguments.invoiceNo,256) />
 		</cfif>
 		<cfif structkeyexists(arguments,"buttonSource")>
-			<cfset requestData.BUTTONSOURCE = left(arguments.buttonSource,32) />
+			<cfset stRequestData.BUTTONSOURCE = left(arguments.buttonSource,32) />
 		</cfif>
 		<cfif structkeyexists(arguments,"notifyURL")>
-			<cfset requestData.NOTIFYURL = left(arguments.notifyURL,2048) />
+			<cfset stRequestData.NOTIFYURL = left(arguments.notifyURL,2048) />
 		</cfif>
 		<cfif structkeyexists(arguments,"recurring")>
-			<cfset requestData.RECURRING = left(arguments.recurring,1) />
+			<cfset stRequestData.RECURRING = left(arguments.recurring,1) />
 		</cfif>
 		
 		<!--- Items --->
 		<cfif structkeyexists(arguments,"items")>
 			<cfloop from="1" to="#arraylen(arguments.items)#" index="index">
 				<cfif structkeyexists(arguments.items[index],"name")>
-					<cfset requestData["L_NAME#index-1#"] = left(arguments.items[index].name,127) />
+					<cfset stRequestData["L_NAME#index-1#"] = left(arguments.items[index].name,127) />
 				</cfif>
 				<cfif structkeyexists(arguments.items[index],"description")>
-					<cfset requestData["L_DESC#index-1#"] = left(arguments.items[index].description,127) />
+					<cfset stRequestData["L_DESC#index-1#"] = left(arguments.items[index].description,127) />
 				</cfif>
 				<cfif structkeyexists(arguments.items[index],"name")>
-					<cfset requestData["L_AMT#index-1#"] = numberformat(arguments.items[index].amount,"0.00") />
+					<cfset stRequestData["L_AMT#index-1#"] = numberformat(arguments.items[index].amount,"0.00") />
 				</cfif>
 				<cfif structkeyexists(arguments.items[index],"number")>
-					<cfset requestData["L_NUMBER#index-1#"] = left(arguments.items[index].number,127) />
+					<cfset stRequestData["L_NUMBER#index-1#"] = left(arguments.items[index].number,127) />
 				</cfif>
 				<cfif structkeyexists(arguments.items[index],"quantity") and isnumeric(arguments.items[index].quantity)>
-					<cfset requestData["L_QTY#index-1#"] = numberformat(arguments.items[index].quantity,"0") />
+					<cfset stRequestData["L_QTY#index-1#"] = numberformat(arguments.items[index].quantity,"0") />
 				</cfif>
 				<cfif structkeyexists(arguments.items[index],"taxAmount")>
-					<cfset requestData["L_TAXAMT#index-1#"] = numberformat(arguments.items[index].taxAmount,"0.00") />
+					<cfset stRequestData["L_TAXAMT#index-1#"] = numberformat(arguments.items[index].taxAmount,"0.00") />
 				</cfif>
 			</cfloop>
 		</cfif>
@@ -452,7 +452,7 @@
 			password=arguments.password,
 			signature=arguments.signature,
 			proxy=arguments.proxy,
-			requestData=requestData) />
+			requestData=stRequestData) />
 		
 		<cfset stResponse = arrayify(stResponse,"errorcode,longmessage,severitycode,shortmessage","errors") />
 		
@@ -486,11 +486,11 @@
 		
 		<cfargument name="transactionID" type="string" required="true" />
 		
-		<cfset var requestData = structnew() />
+		<cfset var stRequestData = structnew() />
 		<cfset var stResponse = structnew() />
 		
-		<cfset requestData.METHOD = "GetTransactionDetails" />
-		<cfset requestData.TRANSACTIONID = arguments.transactionID />
+		<cfset stRequestData.METHOD = "GetTransactionDetails" />
+		<cfset stRequestData.TRANSACTIONID = arguments.transactionID />
 		
 		<cfset stResponse = makeAPIRequest(
 			server=arguments.server,
@@ -498,7 +498,7 @@
 			password=arguments.password,
 			signature=arguments.signature,
 			proxy=arguments.proxy,
-			requestData=requestData) />
+			requestData=stRequestData) />
 		
 		<cfset stResponse = arrayify(stResponse,"errorcode,longmessage,severitycode,shortmessage","errors") />
 		
