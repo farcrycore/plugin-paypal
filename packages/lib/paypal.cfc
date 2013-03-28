@@ -153,12 +153,12 @@
 		
 		
 		<cfset stRequestData.METHOD = "TransactionSearch" />
-		<cfset stRequestData.STARTDATE = "#dateformat(arguments.startDate,'yyyy-mm-dd')#T00:00:00Z" />
+		<cfset stRequestData.STARTDATE = "#dateformat(arguments.startDate,'yyyy-mm-dd')#T#timeformat(arguments.startDate,'hh:mm:ss')#Z" />
 		
 		<cfif structkeyexists(arguments,"endDate")>
-			<cfset stRequestData.ENDDATE = "#dateformat(arguments.endDate,'yyyy-mm-dd')#T23:00:00Z" />
+			<cfset stRequestData.ENDDATE = "#dateformat(arguments.endDate,'yyyy-mm-dd')#T#timeformat(arguments.startDate,'hh:mm:ss')#Z" />
 		<cfelse>
-			<cfset stRequestData.ENDDATE = "#dateformat(arguments.startDate,'yyyy-mm-dd')#T23:00:00Z" />
+			<cfset stRequestData.ENDDATE = "#dateformat(arguments.startDate,'yyyy-mm-dd')#T#timeformat(arguments.startDate,'hh:mm:ss')#Z" />
 		</cfif>
 		
 		<cfif structkeyexists(arguments,"transactionID")>
@@ -280,6 +280,7 @@
 		<cfset var stResponse = "" />
 		<cfset var key = "" />
 		<cfset var index = 0 />
+		<cfset var transactionLogID = application.fapi.getUUID() />
 		
 		
 		<cfset stRequestData.METHOD = "DoDirectPayment" />
@@ -402,8 +403,11 @@
 		<cfif structkeyexists(arguments,"custom")>
 			<cfset stRequestData.CUSTOM = left(arguments.custom,256) />
 		</cfif>
-		<cfif structkeyexists(arguments,"invoiceNo")>
+		<cfif structkeyexists(arguments,"invoiceNo") and len(arguments.invoiceNo)>
 			<cfset stRequestData.INVNUM = left(arguments.invoiceNo,256) />
+		<cfelse>
+			<cfset stRequestData.INVNUM = transactionLogID />
+			<cfset arguments.invoiceNo = transactionLogID />
 		</cfif>
 		<cfif structkeyexists(arguments,"buttonSource")>
 			<cfset stRequestData.BUTTONSOURCE = left(arguments.buttonSource,32) />
@@ -440,7 +444,7 @@
 		</cfif>
 		
 		<cfset stLog = duplicate(arguments) />
-		<cfset stLog.objectid = application.fapi.getUUID() />
+		<cfset stLog.objectid = transactionLogID />
 		<cfset stLog.typename ="paypalTransaction" />
 		<cfset stLog.datetimeTransactionStart = now() />
 		<cfset stLog.result = "Waiting for PayPal" />

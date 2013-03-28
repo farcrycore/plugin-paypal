@@ -227,4 +227,31 @@
 		<cfreturn html />
 	</cffunction>
 	
+	
+	<cffunction name="resolveWithPayPal" access="public" output="false" reutrntype="struct" hint="Attempts to resolve a pending transaction with PayPal">
+		<cfargument name="objectid" type="uuid" required="false" />
+		<cfargument name="stObject" type="struct" required="false" />
+		
+		<cfset var st = "" />
+		
+		<cfif not structkeyexists(arguments,"stObject")>
+			<cfset arguments.stObject = getData(arguments.objectid) />
+		</cfif>
+		
+		<cfset st = application.fc.lib.paypal.searchTransactions(startDate=dateadd("h",-2,arguments.stObject.datetimetransactionStart),invoiceNo=arguments.stObject.invoiceNo) />
+		
+		<cfif arraylen(st.transactions)>
+			<cfset arguments.stObject.result = st.transactions[1].status />
+			<cfset arguments.stObject.transactionID = st.transactions[1].transactionID />
+			<cfset arguments.stObject.datetimetransactionFinish = now() />
+		<cfelse>
+			<cfset arguments.stObject.result = "Aborted" />
+			<cfset arguments.stObject.datetimetransactionFinish = now() />
+		</cfif>
+		
+		<cfset setData(stProperties=arguments.stObject) />
+		
+		<cfreturn arguments.stObject />
+	</cffunction>
+		
 </cfcomponent>
