@@ -1,5 +1,8 @@
+# Paypal FarCry Core Plugin
+
 The purpose of this plugin is to provide credit card processing functionality via 
-PayPal. It is designed so that transactions can be handled with a minimum of fuss,
+PayPal, for applications using the [FarCry Publishing Platform](http://www.farcrycore.org). 
+It is designed so that transactions can be handled with a minimum of fuss,
 and so that other processing gateways could expose equivalent interfaces.
 
 NOTE: The plugin used the [Payflow Pro][payflowpro] API.
@@ -7,7 +10,8 @@ NOTE: The plugin used the [Payflow Pro][payflowpro] API.
 # Setup
 
 1. Setup PayPal (see below) and make a note of the API credentials
-2. Install this plugin (copy files into /farcry/plugins/paypal, updateapp, and 
+2. Install this plugin (copy files into ```/farcry/plugins/paypal```, add the 
+   plugin to the farcryconstructor plugin list, updateapp, and 
    deploy schema changes)
 3. Make sure you have the correct PayPal server selected - Production or Sandbox
 4. Add the API credentials to the PayPal config (Admin -> Configuration -> Edit 
